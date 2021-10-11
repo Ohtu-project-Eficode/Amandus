@@ -8,6 +8,7 @@ const registerUser = async ({
   email,
   password
 }: RegisterUserInput): Promise<UserType> => {
+
   const queryText =
     'INSERT INTO USERS(username, email, password) VALUES($1, $2, $3) RETURNING id, username, user_role, email'
   const cryptedPassword = bcrypt.hashSync(password, 10)
@@ -18,6 +19,7 @@ const registerUser = async ({
   ])
 
   return queryResult.rows[0]
+  
 }
 
 const registerAdmin = async ({
@@ -109,7 +111,6 @@ const deleteUser = async (username: string): Promise<void> => {
   DELETE FROM Users WHERE username=$1
   `
   await pool.query(queryText, [username])
-
 }
 
 export default {

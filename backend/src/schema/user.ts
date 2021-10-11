@@ -298,6 +298,19 @@ const resolvers = {
         throw new UserInputError(errorMessage)
       }
 
+      //admin for now
+      if (args.username === 'admin') {
+        const user = await User.registerAdmin(args)
+      if (!user) {
+        throw new UserInputError(
+          'Could not create a user with given username and password'
+        )
+      }
+      const tokens = createTokens(user)
+      return tokens
+      } 
+      // TODO figure out how to register admins
+
       const user = await User.registerUser(args)
 
       if (!user) {
@@ -333,16 +346,17 @@ const resolvers = {
       args: UserType,
       _context: AppContext
     ): Promise<void> => {
-      const username = args.username
+      const {username } = args
+      
       if (!username) {
         throw new UserInputError(
           'User not valid'
         )
       }
+      const user = await User.findUserByUsername(username)
+      user?.id && tokenService.deleteTokenByUserId(user.id)
       await User.deleteUser(username)
 
-      
-    //  await user.deleteUser
     }
   }
 }
