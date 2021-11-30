@@ -168,6 +168,7 @@ const EditorBottomBar = ({
       <div className={classes.saveGroup}>
         <div className={classes.buttonAndStatus}>
           <Button
+            data-cy='pullButton'
             style={{ marginRight: 5 }}
             color="secondary"
             variant="contained"
@@ -177,6 +178,7 @@ const EditorBottomBar = ({
             Pull
           </Button>
           <Button
+            data-cy='saveButton'
             color="primary"
             variant="contained"
             disabled={pullLoading || mutationSaveLoading}
@@ -189,7 +191,7 @@ const EditorBottomBar = ({
         </div>
         <LatestCommit commitMessage={commitMessage} />
         {autosaving && (
-          <div>
+          <div data-cy='autosaveIndicator'>
             <CircularProgress size={10} />
             <span> Saving...</span>
           </div>
