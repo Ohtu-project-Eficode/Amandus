@@ -65,10 +65,17 @@ Cypress.Commands.add('resetRepoState', () => {
     method: 'post',
     url: Cypress.env('GRAPHQL_URI'),
     body: { query },
+    headers: {
+      'Access-Control-Expose-Headers': 'x-access-token,x-refresh-token',
+      'x-access-token': localStorage.getItem('amandus-user-access-token'),
+      'x-refresh-token': localStorage.getItem('amandus-user-refresh-token'),
+    },
     failOnStatusCode: false,
   }).then((res) => {
     cy.log(res)
   })
+
+  cy.wait(1000)
 })
 
 Cypress.Commands.add('connectWith', (service) => {
@@ -95,10 +102,36 @@ Cypress.Commands.add('clickFileDrawerOn', (itemName) => {
   cy.get('.MuiTreeItem-content').contains(itemName).click().wait(200)
 })
 
+Cypress.Commands.add('typeTextToEditor', (text) => {
+  cy.get('.monaco-editor textarea').focus().type(text)
+  cy.wait(1000)
+})
+
 Cypress.Commands.add('editorShouldContainLine', (text) => {
   // we have to replace spaces because monaco editor
-  const temp = text.replaceAll(" ", "\u00a0")
+  const temp = text.replaceAll(' ', '\u00a0')
   cy.get('.view-line').should('contain', temp)
+})
+Cypress.Commands.add('editorShouldNotContainLine', (text) => {
+  const temp = text.replaceAll(' ', '\u00a0')
+  cy.get('.view-line').should('not.contain', temp)
+})
+
+Cypress.Commands.add('clickSaveButton', () => {
+  cy.get('[data-cy=saveButton]').click()
+  cy.get('.MuiDialog-paper')
+    .should('be.visible')
+    .should('contain', 'Save changes')
+})
+
+Cypress.Commands.add('clickResetFileButton', () => {
+  cy.get('[data-cy=resetFileButton').click()
+  cy.wait(1000)
+})
+
+Cypress.Commands.add('clickResetRepoButton', () => {
+  cy.get('[data-cy=resetRepoButton').click()
+  cy.wait(1000)
 })
 
 Cypress.Commands.add('interceptGetRepoListFromService', () => {
@@ -145,4 +178,13 @@ Cypress.Commands.add('openRepositoryToEditor', () => {
   cy.visit(Cypress.env('HOST') + '/repositories')
   cy.get('.MuiListItem-root').contains('edit').click()
   cy.wait(1000)
+})
+
+Cypress.Commands.add('openReadmeToEditor', () => {
+  cy.get('.MuiTreeItem-content').should('contain', 'testuser')
+  cy.clickFileDrawerOn('testuser')
+  cy.clickFileDrawerOn('e2e')
+  cy.clickFileDrawerOn('README.md')
+  cy.url().should('contain', 'testuser/github/testuser/e2etest/README.md')
+  cy.get('.monaco-editor')
 })
