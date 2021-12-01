@@ -125,12 +125,13 @@ Cypress.Commands.add('clickSaveButton', () => {
 })
 
 Cypress.Commands.add('clickResetFileButton', () => {
-  cy.get('[data-cy=resetFileButton').click()
+  cy.get('[data-cy=resetFileButton]').click()
   cy.wait(1000)
 })
 
 Cypress.Commands.add('clickResetRepoButton', () => {
-  cy.get('[data-cy=resetRepoButton').click()
+  cy.get('[data-cy=resetRepoButton]').click()
+  cy.get('[data-cy=resetRepoConfirmButton]').click()
   cy.wait(1000)
 })
 
