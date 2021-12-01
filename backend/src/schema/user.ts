@@ -53,6 +53,17 @@ const resolvers = {
     ): UserType | undefined => {
       return context.currentUser
     },
+    getAllUsers: async (
+      _root: unknown,
+      _args: unknown,
+      context: AppContext
+    ): Promise<UserType[] | null> => {
+      if (!context.currentUser || context.currentUser.user_role !== 'admin') {
+        throw new ForbiddenError('Not authorized')
+      }
+      
+      return await User.getAllUsers()
+    },
     isGithubConnected: async (
       _root: unknown,
       _args: unknown,
