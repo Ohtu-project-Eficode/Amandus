@@ -36,6 +36,7 @@ const ResetDialog = ({
           Cancel
         </Button>
         <Button
+          data-cy='resetRepoConfirmButton'
           variant="contained"
           color="primary"
           onClick={() => handleResetAll()}
