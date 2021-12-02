@@ -32,13 +32,14 @@ const FileSelector = () => {
   return (
     <div>
       <FormLabel>Select files</FormLabel>
-      <FormGroup>
+      <FormGroup data-cy='fileSelector'>
         {files
           .filter((f) => !!f.status)
           .map((f) => (
             <FormControlLabel
               control={
                 <Checkbox
+                  data-cy='fileSelectionCheckbox'
                   checked={!!selected?.includes(f.name)}
                   onChange={() => handleChange(f)}
                   disabled={f.status === 'U'}

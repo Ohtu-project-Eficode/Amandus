@@ -52,6 +52,7 @@ const ResetButtons = ({
         handleResetAll={handleReset}
       />
       <Button
+        data-cy="resetFileButton"
         style={{ marginLeft: 150 }}
         className={classes.resetButton}
         variant="outlined"
@@ -62,6 +63,7 @@ const ResetButtons = ({
         Reset File
       </Button>
       <Button
+        data-cy="resetRepoButton"
         style={{ marginLeft: 5 }}
         className={classes.resetButton}
         variant="outlined"
