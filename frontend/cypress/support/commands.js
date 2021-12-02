@@ -89,7 +89,7 @@ Cypress.Commands.add('connectWith', (service) => {
       break
     case 'bitbucket':
       callbackUrl = '/auth/bitbucket/callback?code=asdasdasd'
-      break;
+      break
     default:
       throw new Error(`no such service: ${service}`)
   }
@@ -172,9 +172,43 @@ Cypress.Commands.add('interceptCloneRepo', () => {
   })
 })
 
+// this will intercept settings request to 
+// make sure that autosave is on
+Cypress.Commands.add('interceptGetSettings', () => {
+  cy.intercept('POST', Cypress.env('GRAPHQL_URI'), (req) => {
+    if (req.body.operationName === 'getSettings') {
+      req.reply({
+        body: {
+          data: {
+            getSettings: {
+              misc: [
+                {
+                  name: 'Autosave Interval',
+                  value: 500,
+                  unit: 'ms',
+                  active: true,
+                  min: 500,
+                  max: 60000,
+                },
+              ],
+              plugins: [
+                {
+                  name: 'robot-language-server',
+                  active: true,
+                },
+              ],
+            },
+          },
+        },
+      })
+    }
+  })
+})
+
 Cypress.Commands.add('openRepositoryToEditor', () => {
   cy.interceptGetRepoListFromService()
   cy.interceptCloneRepo()
+  cy.interceptGetSettings()
 
   cy.visit(Cypress.env('HOST') + '/repositories')
   cy.get('.MuiListItem-root').contains('edit').click()
