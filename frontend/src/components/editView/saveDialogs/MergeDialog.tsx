@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import React, { useState } from 'react'
-import FileSelector from '../../FileSelector'
+import FileSelector from '../FileSelector'
 
 interface Error {
   title: string

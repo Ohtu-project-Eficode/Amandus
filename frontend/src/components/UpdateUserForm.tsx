@@ -149,7 +149,7 @@ const UpdateUserForm = ({ user }: Props) => {
             <Form>
               <Grid container direction="row">
                 <Grid item className={classes.title} xs={12}>
-                  <h1>Update credentials</h1>
+                  <h1>Update credentials for user: {user.username}</h1>
                 </Grid>
 
                 <Grid item className={classes.textField} xs={8}>
@@ -164,7 +164,7 @@ const UpdateUserForm = ({ user }: Props) => {
                     helperText={
                       touched.username && errors.username
                         ? errors.username
-                        : 'Enter your username.'
+                        : 'Enter new username to update.'
                     }
                     error={touched.username && errors.username ? true : false}
                   />
@@ -182,7 +182,7 @@ const UpdateUserForm = ({ user }: Props) => {
                     helperText={
                       touched.email && errors.email
                         ? errors.email
-                        : 'Enter your email address.'
+                        : 'Enter new email address to update.'
                     }
                     error={touched.email && errors.email ? true : false}
                   />
@@ -213,7 +213,7 @@ const UpdateUserForm = ({ user }: Props) => {
                     id="confirmPassword"
                     name="confirmPassword"
                     type="password"
-                    label="Confirm"
+                    label="Confirm Password"
                     value={values.confirmPassword}
                     onChange={handleChange}
                     onBlur={handleBlur}

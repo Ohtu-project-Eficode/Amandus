@@ -6,12 +6,13 @@ import { DELETE_USER } from '../graphql/mutations'
 import { UserType } from '../types'
 import useSaveDialog from '../hooks/useSaveDialog'
 import PromptDialog from './PromptDialog'
+import UpdateUserForm from './UpdateUserForm'
 
 interface Props {
   user: UserType | undefined
 }
 
-const DeleteAccount = ({ user }: Props) => {
+const AccountSettings = ({ user }: Props) => {
 
   const [deleteUser] = useMutation(DELETE_USER)
 
@@ -44,7 +45,8 @@ const DeleteAccount = ({ user }: Props) => {
   }
 
   return (
-    <div >
+    <div className={classes.root}>
+      {user && <UpdateUserForm user={user} />}
       <PromptDialog
         open={dialogOpen}
         handleClose={handleDialogClose}
@@ -55,7 +57,6 @@ const DeleteAccount = ({ user }: Props) => {
         id="delete-button"
         name="delete-button"
         className={classes.deleteButton}
-
         color="primary"
         variant="contained"
         onClick={handleDeleteClick}
@@ -70,8 +71,14 @@ const stylesInUse = makeStyles(() =>
   createStyles({
     deleteButton: {
       backgroundColor: 'red',
+      margin:  '25px 0px 15px 0px'
+    },
+    root: {
+      maxWidth: '500px',
+      display: 'block',
+      margin: '0 auto',
     },
   })
 )
 
-export default DeleteAccount
+export default AccountSettings

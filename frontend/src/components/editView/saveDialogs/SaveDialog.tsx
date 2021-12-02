@@ -19,7 +19,7 @@ import {
   TextField,
 } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
-import FileSelector from '../../FileSelector'
+import FileSelector from '../FileSelector'
 
 interface Error {
   title: string

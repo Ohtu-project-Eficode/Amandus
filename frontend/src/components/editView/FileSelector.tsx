@@ -5,8 +5,8 @@ import {
   FormLabel,
 } from '@material-ui/core'
 import React from 'react'
-import { File } from '../types'
-import { useFiles } from './editView/FileProvider'
+import { File } from './../../types'
+import { useFiles } from './FileProvider'
 
 const formatName = (name: string) => {
   return name.split('/').slice(4).join('/')
