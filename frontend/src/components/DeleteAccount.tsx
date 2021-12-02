@@ -4,13 +4,14 @@ import { useMutation } from '@apollo/client'
 import { Button } from '@material-ui/core'
 import { DELETE_USER } from '../graphql/mutations'
 import { UserType } from '../types'
+import UpdateUserForm from './UpdateUserForm'
 
 interface Props {
   user: UserType | undefined
 }
 
 const DeleteAccount = ({ user }: Props) => {
-  
+
   const [deleteUser] = useMutation(DELETE_USER)
 
   const deleteUserAccount = async () => {
@@ -32,22 +33,22 @@ const DeleteAccount = ({ user }: Props) => {
 
   return (
     <div >
-      
-        <p >
-          We are sorry to see you go...
+
+      <p >
+        We are sorry to see you go...
         </p>
 
-        <Button
-          id="delete-button"
-          name="delete-button"
-          color="primary"
-          variant="contained"
-          onClick={deleteUserAccount}
-        >
-          Delete Account
+      <Button
+        id="delete-button"
+        name="delete-button"
+        color="primary"
+        variant="contained"
+        onClick={deleteUserAccount}
+      >
+        Delete Account
         </Button>
-        
-      </div>
+      {user && <UpdateUserForm user={user} />}
+    </div>
   )
 }
 
