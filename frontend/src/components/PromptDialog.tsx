@@ -10,13 +10,15 @@ import {
 interface Props {
   open: boolean
   handleClose: () => void,
-  handleResetAll: () => void
+  handleSubmit: () => void,
+  dialogTitle: string
 }
 
-const ResetDialog = ({
+const PromptDialog = ({
   open,
   handleClose,
-  handleResetAll,
+  handleSubmit,
+  dialogTitle
 }: Props) => {
 
   return (
@@ -26,7 +28,7 @@ const ResetDialog = ({
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle id="form-dialog-title">
-        This will reset the repository to latest commit
+        {dialogTitle}
       </DialogTitle>
       <DialogActions>
         <Button
@@ -38,7 +40,7 @@ const ResetDialog = ({
         <Button
           variant="contained"
           color="primary"
-          onClick={() => handleResetAll()}
+          onClick={() => handleSubmit()}
         >
           Confirm
         </Button>
@@ -47,4 +49,4 @@ const ResetDialog = ({
   )
 }
 
-export default ResetDialog
+export default PromptDialog

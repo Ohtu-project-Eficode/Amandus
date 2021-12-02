@@ -2,7 +2,7 @@ import { Button, createStyles, makeStyles } from '@material-ui/core'
 import React from 'react'
 import useSaveDialog from '../../hooks/useSaveDialog'
 import useEditor from './MonacoEditor/useMonacoEditor'
-import ResetDialog from './saveDialogs/ResetDialog'
+import PromptDialog from '../PromptDialog'
 
 const ResetButtons = ({
   cloneUrl,
@@ -46,10 +46,11 @@ const ResetButtons = ({
 
   return (
     <>
-      <ResetDialog
+      <PromptDialog
         open={dialogOpen}
         handleClose={handleDialogClose}
-        handleResetAll={handleReset}
+        handleSubmit={handleReset}
+        dialogTitle={'This will reset the repository to latest commit'}
       />
       <Button
         style={{ marginLeft: 150 }}

@@ -1,10 +1,11 @@
 import React from 'react'
 import { useMutation } from '@apollo/client'
 
-import { Button } from '@material-ui/core'
+import { Button, createStyles, makeStyles } from '@material-ui/core'
 import { DELETE_USER } from '../graphql/mutations'
 import { UserType } from '../types'
-import UpdateUserForm from './UpdateUserForm'
+import useSaveDialog from '../hooks/useSaveDialog'
+import PromptDialog from './PromptDialog'
 
 interface Props {
   user: UserType | undefined
@@ -14,6 +15,18 @@ const DeleteAccount = ({ user }: Props) => {
 
   const [deleteUser] = useMutation(DELETE_USER)
 
+  const {
+    dialogOpen,
+    handleDialogClose,
+    handleDialogOpen,
+  } = useSaveDialog()
+
+  const handleDeleteClick = () => {
+    handleDialogOpen()
+  }
+
+  const classes = stylesInUse()
+
   const deleteUserAccount = async () => {
     try {
       await deleteUser({
@@ -21,10 +34,9 @@ const DeleteAccount = ({ user }: Props) => {
           username: user?.username
         }
       })
-
       localStorage.clear()
       window.location.href = '/'
-
+      handleDialogClose()
     }
     catch (e) {
       console.log(e)
@@ -33,23 +45,33 @@ const DeleteAccount = ({ user }: Props) => {
 
   return (
     <div >
-
-      <p >
-        We are sorry to see you go...
-        </p>
-
+      <PromptDialog
+        open={dialogOpen}
+        handleClose={handleDialogClose}
+        handleSubmit={deleteUserAccount}
+        dialogTitle={'By confirming your account will be deleted irreversibly'}
+      />
       <Button
         id="delete-button"
         name="delete-button"
+        className={classes.deleteButton}
+
         color="primary"
         variant="contained"
-        onClick={deleteUserAccount}
+        onClick={handleDeleteClick}
       >
         Delete Account
-        </Button>
-      {user && <UpdateUserForm user={user} />}
+      </Button>
     </div>
   )
 }
+
+const stylesInUse = makeStyles(() =>
+  createStyles({
+    deleteButton: {
+      backgroundColor: 'red',
+    },
+  })
+)
 
 export default DeleteAccount
