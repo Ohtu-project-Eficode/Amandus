@@ -232,6 +232,8 @@ const UpdateUserForm = ({ user }: Props) => {
 
                 <Grid item className={classes.registerButton} xs={6}>
                   <Button
+                    id='update-button'
+                    className='update-button'
                     color="primary"
                     type="submit"
                     variant="contained"

@@ -22,30 +22,36 @@ const PromptDialog = ({
 }: Props) => {
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">
-        {dialogTitle}
-      </DialogTitle>
-      <DialogActions>
-        <Button
-          variant="outlined"
-          onClick={handleClose}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleSubmit()}
-        >
-          Confirm
-        </Button>
-      </DialogActions>|
-    </Dialog>
+    <div id='prompt-dialog'>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">
+          {dialogTitle}
+        </DialogTitle>
+        <DialogActions>
+          <Button
+            id="cancel-button"
+            variant="outlined"
+            onClick={handleClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            id="submit-button"
+            variant="contained"
+            color="primary"
+            className="submit"
+            onClick={() => handleSubmit()}
+          >
+            Confirm
+          </Button>
+        </DialogActions>|
+      </Dialog>
+    </div>
+
   )
 }
 
