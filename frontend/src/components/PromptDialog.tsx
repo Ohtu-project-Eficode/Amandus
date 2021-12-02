@@ -41,6 +41,7 @@ const PromptDialog = ({
           </Button>
           <Button
             id="submit-button"
+            data-cy='ConfirmButton'
             variant="contained"
             color="primary"
             className="submit"

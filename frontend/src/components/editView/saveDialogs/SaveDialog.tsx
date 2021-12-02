@@ -98,6 +98,7 @@ const SaveDialog = ({
                     value={true}
                     control={<Radio color="primary" />}
                     label="New"
+                    data-cy='newBranchSelector'
                   />
                 </RadioGroup>
               </FormControl>
@@ -105,6 +106,7 @@ const SaveDialog = ({
             <Grid item>
               <Collapse in={createNewBranch}>
                 <TextField
+                  data-cy='branchNameInput'
                   label="Branch name"
                   variant="outlined"
                   margin="normal"
