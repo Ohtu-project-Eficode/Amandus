@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid'
 
-describe('When deleting user', () => {
+describe('When updating user credentials', () => {
   beforeEach(() => {
     cy.resetUsers()
     cy.resetTokens()
-    cy.createUserAndLogin('testuser', 'testuser@testus.er', 'Testi123!')
+    cy.createUserAndLogin('testupdateuser', 'testuser@testus.er', 'Testi123!')
   })
 
   it('I can delete my user account', () => {
@@ -27,7 +27,7 @@ describe('When deleting user', () => {
   it('I can update my username', () => {
     const newUsername = 'newTestUser'
     cy.visit(Cypress.env('HOST') + '/accountSettings')
-    cy.contains('Update credentials for user: testuser')
+    cy.contains('Update credentials for user: testupdateuser')
     cy.get('#username').type(newUsername)
 
     cy.get('#update-button').contains('Update').click()
