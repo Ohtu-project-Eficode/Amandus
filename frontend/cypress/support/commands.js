@@ -131,7 +131,7 @@ Cypress.Commands.add('clickResetFileButton', () => {
 
 Cypress.Commands.add('clickResetRepoButton', () => {
   cy.get('[data-cy=resetRepoButton]').click()
-  cy.get('[data-cy=resetRepoConfirmButton]').click()
+  cy.get('[data-cy=ConfirmButton]').click()
   cy.wait(1000)
 })
 

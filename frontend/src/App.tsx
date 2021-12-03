@@ -11,13 +11,13 @@ import { lightTheme, darkTheme } from './styles/themes'
 import RepositoriesView from './components/RepositoriesView'
 import Connections from './components/Connections'
 import MyLoginForm from './components/MyLoginForm'
-import DeleteAccount from './components/DeleteAccount'
 import { useLocation } from 'react-router-dom'
 import CallBack from './components/auth/CallBack'
 import SettingsPage from './components/settingsPage/SettingsPage'
 import SettingsProvider from './components/SettingsProvider'
 import NotificationProvider from './components/Notification/NotificationProvider'
 import useUser from './hooks/useUser'
+import AccountSettings from './components/AccountSettings'
 
 interface LocationState {
   cloneUrl: string
@@ -87,8 +87,8 @@ const App = () => {
                 <Connections />
               </Route>
 
-              <Route exact path="/deleteAccount">
-                <DeleteAccount user={user?.me} />
+              <Route exact path="/accountSettings">
+                <AccountSettings user={user?.me} />
               </Route>
 
               <Route exact path="/settings">

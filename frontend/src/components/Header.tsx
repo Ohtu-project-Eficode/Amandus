@@ -118,9 +118,9 @@ const Header = ({ user, theme, toggleTheme }: Props) => {
               <Link
                 component={RouterLink}
                 className={classes.linkBtnTransparent}
-                to="/deleteAccount"
+                to="/accountSettings"
               >
-                Delete Account
+                Manage Account
               </Link>
             )}
             {user && (
