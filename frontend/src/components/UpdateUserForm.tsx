@@ -48,10 +48,10 @@ interface MyFormStatusProps {
 }
 
 interface MyUpdateForm {
-  username: string 
-  email: string 
-  password: string 
-  confirmPassword: string 
+  username: string
+  email: string
+  password: string
+  confirmPassword: string
 }
 
 const formStatusProps: MyFormStatusProps = {
@@ -78,29 +78,20 @@ const UpdateUserForm = ({ user }: Props) => {
   const [showFormStatus, setShowFormStatus] = useState(false)
 
   const [updateUser] = useMutation(UPDATE_USER, {
-    refetchQueries: [
-      { query: ME }
-    ]
+    refetchQueries: [{ query: ME }],
   })
 
-  const updateAccount = async (
-    data: MyUpdateForm,
-    resetForm: Function
-  ) => {
+  const updateAccount = async (data: MyUpdateForm, resetForm: Function) => {
     try {
-      const updateResponse = await updateUser({
+      await updateUser({
         variables: {
           username: user.username,
-          newUsername: data.username === '' ? undefined : data.username ,
+          newUsername: data.username === '' ? undefined : data.username,
           newEmail: data.email === '' ? undefined : data.email,
           newPassword: data.password === '' ? undefined : data.password,
         },
-
       })
       setFormStatus(formStatusProps.success)
-      console.log(updateResponse)
-
-
     } catch (error) {
       if (
         /** gets rid of ts error "Object is of type 'unknown'" */
@@ -200,9 +191,9 @@ const UpdateUserForm = ({ user }: Props) => {
                     helperText={
                       touched.password && errors.password
                         ? 'Make sure your password is minimum of 8 characters long and consists of at least 1 uppercase, lowercase, number and one special ' +
-                        'character from !?@#$%^&*(). Password cannot end with an empty space.'
+                          'character from !?@#$%^&*(). Password cannot end with an empty space.'
                         : 'Valid password is minimum of 8 characters long and consists of at least 1 uppercase, lowercase, number and one special ' +
-                        'character from !?@#$%^&*(). Password cannot end with an empty space.'
+                          'character from !?@#$%^&*(). Password cannot end with an empty space.'
                     }
                     error={touched.password && errors.password ? true : false}
                   />
@@ -232,8 +223,8 @@ const UpdateUserForm = ({ user }: Props) => {
 
                 <Grid item className={classes.registerButton} xs={6}>
                   <Button
-                    id='update-button'
-                    className='update-button'
+                    id="update-button"
+                    className="update-button"
                     color="primary"
                     type="submit"
                     variant="contained"
