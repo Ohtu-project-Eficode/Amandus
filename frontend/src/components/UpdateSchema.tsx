@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-const RegisterSchema = () => {
+const UpdateSchema = () => {
   return Yup.object().shape({
     email: Yup.string().email(),
     username: Yup.string()
@@ -13,7 +13,11 @@ const RegisterSchema = () => {
       ),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref('password'), ''], 'Passwords must match.')
+      .when('password', {
+        is: (password) => password,
+        then: Yup.string().required('Passwords must match.'),
+      }),
   })
 }
 
-export default RegisterSchema
+export default UpdateSchema
