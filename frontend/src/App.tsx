@@ -18,6 +18,7 @@ import SettingsProvider from './components/SettingsProvider'
 import NotificationProvider from './components/Notification/NotificationProvider'
 import useUser from './hooks/useUser'
 import AccountSettings from './components/AccountSettings'
+import UserManagement from './components/UserManagement'
 
 interface LocationState {
   cloneUrl: string
@@ -89,6 +90,10 @@ const App = () => {
 
               <Route exact path="/accountSettings">
                 <AccountSettings user={user?.me} />
+              </Route>
+
+              <Route exact path="/users">
+                <UserManagement />
               </Route>
 
               <Route exact path="/settings">
