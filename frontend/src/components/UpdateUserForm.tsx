@@ -8,8 +8,10 @@ import {
   createStyles,
 } from '@material-ui/core'
 import { useMutation } from '@apollo/client'
-import { REGISTER } from '../graphql/mutations'
-import RegisterSchema from './RegisterSchema'
+import { UPDATE_USER } from '../graphql/mutations'
+import { UserType } from '../types'
+import { ME } from '../graphql/queries'
+import UpdateSchema from './UpdateSchema'
 
 const stylesInUse = makeStyles((theme) =>
   createStyles({
@@ -32,6 +34,10 @@ const stylesInUse = makeStyles((theme) =>
   })
 )
 
+interface Props {
+  user: UserType
+}
+
 interface MyFormStatus {
   type: string
   message: string
@@ -41,7 +47,7 @@ interface MyFormStatusProps {
   [key: string]: MyFormStatus
 }
 
-interface MyRegisterForm {
+interface MyUpdateForm {
   username: string
   email: string
   password: string
@@ -50,11 +56,11 @@ interface MyRegisterForm {
 
 const formStatusProps: MyFormStatusProps = {
   error: {
-    message: 'Registeration failed. Please try again.',
+    message: 'Update failed. Please try again.',
     type: 'error',
   },
   success: {
-    message: 'Registered successfully.',
+    message: 'Updated successfully.',
     type: 'success',
   },
   duplicate: {
@@ -63,7 +69,7 @@ const formStatusProps: MyFormStatusProps = {
   },
 }
 
-const RegisterForm = () => {
+const UpdateUserForm = ({ user }: Props) => {
   const [formStatus, setFormStatus] = useState<MyFormStatus>({
     message: '',
     type: '',
@@ -71,31 +77,21 @@ const RegisterForm = () => {
   const classes = stylesInUse()
   const [showFormStatus, setShowFormStatus] = useState(false)
 
-  const [registerUser] = useMutation(REGISTER)
+  const [updateUser] = useMutation(UPDATE_USER, {
+    refetchQueries: [{ query: ME }],
+  })
 
-  const createNewAccount = async (
-    data: MyRegisterForm,
-    resetForm: Function
-  ) => {
+  const updateAccount = async (data: MyUpdateForm, resetForm: Function) => {
     try {
-      const registerResponse = await registerUser({
+      await updateUser({
         variables: {
-          username: data.username,
-          email: data.email,
-          password: data.password,
+          username: user.username,
+          newUsername: data.username === '' ? undefined : data.username,
+          newEmail: data.email === '' ? undefined : data.email,
+          newPassword: data.password === '' ? undefined : data.password,
         },
       })
       setFormStatus(formStatusProps.success)
-      localStorage.setItem(
-        'amandus-user-access-token',
-        registerResponse.data.register.accessToken
-      )
-      localStorage.setItem(
-        'amandus-user-refresh-token',
-        registerResponse.data.register.refreshToken
-      )
-
-      window.location.href = '/connections'
     } catch (error) {
       if (
         /** gets rid of ts error "Object is of type 'unknown'" */
@@ -111,7 +107,7 @@ const RegisterForm = () => {
     setShowFormStatus(true)
   }
 
-  const UserSchema = RegisterSchema
+  const UserSchema = UpdateSchema
 
   return (
     <div className={classes.root}>
@@ -122,15 +118,15 @@ const RegisterForm = () => {
           password: '',
           confirmPassword: '',
         }}
-        onSubmit={(values: MyRegisterForm, actions) => {
-          createNewAccount(values, actions.resetForm)
+        onSubmit={(values: MyUpdateForm, actions) => {
+          updateAccount(values, actions.resetForm)
           setTimeout(() => {
             actions.setSubmitting(false)
           }, 400)
         }}
         validationSchema={UserSchema}
       >
-        {(props: FormikProps<MyRegisterForm>) => {
+        {(props: FormikProps<MyUpdateForm>) => {
           const {
             handleBlur,
             handleChange,
@@ -144,7 +140,7 @@ const RegisterForm = () => {
             <Form>
               <Grid container direction="row">
                 <Grid item className={classes.title} xs={12}>
-                  <h1>Register</h1>
+                  <h1>Update credentials for user: {user.username}</h1>
                 </Grid>
 
                 <Grid item className={classes.textField} xs={8}>
@@ -159,7 +155,7 @@ const RegisterForm = () => {
                     helperText={
                       touched.username && errors.username
                         ? errors.username
-                        : 'Enter your username.'
+                        : 'Enter new username to update.'
                     }
                     error={touched.username && errors.username ? true : false}
                   />
@@ -177,7 +173,7 @@ const RegisterForm = () => {
                     helperText={
                       touched.email && errors.email
                         ? errors.email
-                        : 'Enter your email address.'
+                        : 'Enter new email address to update.'
                     }
                     error={touched.email && errors.email ? true : false}
                   />
@@ -208,7 +204,7 @@ const RegisterForm = () => {
                     id="confirmPassword"
                     name="confirmPassword"
                     type="password"
-                    label="Confirm"
+                    label="Confirm Password"
                     value={values.confirmPassword}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -227,13 +223,15 @@ const RegisterForm = () => {
 
                 <Grid item className={classes.registerButton} xs={6}>
                   <Button
+                    id="update-button"
+                    className="update-button"
                     color="primary"
                     type="submit"
                     variant="contained"
                     disabled={isSubmitting}
                   >
                     {' '}
-                    Register
+                    Update
                   </Button>
                   {showFormStatus && (
                     <div className="formStatus">
@@ -258,4 +256,4 @@ const RegisterForm = () => {
   )
 }
 
-export default RegisterForm
+export default UpdateUserForm

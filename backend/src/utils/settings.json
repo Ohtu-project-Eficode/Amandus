@@ -5,6 +5,7 @@
                 "name": "Autosave Interval",
                 "value": 500,
                 "unit": "ms",
+                "active": true,
                 "min": 500,
                 "max": 60000
             }

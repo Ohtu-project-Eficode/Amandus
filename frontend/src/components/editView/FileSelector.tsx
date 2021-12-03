@@ -5,8 +5,8 @@ import {
   FormLabel,
 } from '@material-ui/core'
 import React from 'react'
-import { File } from '../types'
-import { useFiles } from './editView/FileProvider'
+import { File } from './../../types'
+import { useFiles } from './FileProvider'
 
 const formatName = (name: string) => {
   return name.split('/').slice(4).join('/')
@@ -32,13 +32,14 @@ const FileSelector = () => {
   return (
     <div>
       <FormLabel>Select files</FormLabel>
-      <FormGroup>
+      <FormGroup data-cy='fileSelector'>
         {files
           .filter((f) => !!f.status)
           .map((f) => (
             <FormControlLabel
               control={
                 <Checkbox
+                  data-cy='fileSelectionCheckbox'
                   checked={!!selected?.includes(f.name)}
                   onChange={() => handleChange(f)}
                   disabled={f.status === 'U'}

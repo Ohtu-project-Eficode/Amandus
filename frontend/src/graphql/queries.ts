@@ -104,12 +104,13 @@ export const GET_REPO_LIST = gql`
 `
 
 export const GET_SETTINGS = gql`
-  query {
+  query getSettings {
     getSettings {
       misc {
         name, 
         value, 
         unit,
+        active,
         min,
         max
       }
