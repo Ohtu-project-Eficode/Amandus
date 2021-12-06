@@ -83,6 +83,9 @@ const Mutation = `
         deleteUser(
             username: String!
         ): String
+        deleteServiceTokens(
+            username: String!
+        ): String
         updateUser(
             username: String!,
             newUsername: String,
