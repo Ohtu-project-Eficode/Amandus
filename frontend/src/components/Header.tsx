@@ -133,6 +133,21 @@ const Header = ({ user, theme, toggleTheme }: Props) => {
               </Link>
             )}
           </div>
+          {user && (
+            <div>
+              {user.user_role === 'admin' ? (
+                <Link
+                  component={RouterLink}
+                  className={classes.linkBtnTransparent}
+                  to="/users"
+                >
+                  User management
+                </Link>
+              ) : (
+                ''
+              )}
+            </div>
+          )}
           <Switch
             checked={switchChecked}
             onChange={handleSwitchToggle}

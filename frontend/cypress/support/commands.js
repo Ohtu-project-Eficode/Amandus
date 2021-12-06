@@ -24,7 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('createUserAndLogin', (username, email, password) => {
+Cypress.Commands.add('createUserAndLogin', (username, email, password, login=true) => {
   const query = `mutation {
     register(
       username:"${username}",
@@ -43,8 +43,44 @@ Cypress.Commands.add('createUserAndLogin', (username, email, password) => {
     failOnStatusCode: false
   }).then((res) => {
     cy.log(res);
-    localStorage.setItem('amandus-user-access-token', res.body.data.register.accessToken)
-    localStorage.setItem('amandus-user-refresh-token', res.body.data.register.accessToken)
+    if (login) {
+      localStorage.setItem('amandus-user-access-token', res.body.data.register.accessToken)
+      localStorage.setItem('amandus-user-refresh-token', res.body.data.register.accessToken)
+    }
+  })
+})
+
+Cypress.Commands.add('createAdmin', (username, email, password) => {
+  cy.request({
+    method: 'post',
+    url: `${Cypress.env('BACKEND_URI')}/registerAdmin`,
+    body: { username, email, password },
+    failOnStatusCode: false
+  }).then((res) => {
+    cy.log(res)
+  })
+})
+
+Cypress.Commands.add('login', (username, password) => {
+  const query = `mutation {
+    login(
+      username:"${username}",
+      password:"${password}"
+    ) {
+      accessToken,
+      refreshToken
+    }
+  }`
+
+  cy.request({
+    method: 'post',
+    url: Cypress.env('GRAPHQL_URI'),
+    body: { query },
+    failOnStatusCode: false
+  }).then((res) => {
+    cy.log(res)
+    localStorage.setItem('amandus-user-access-token', res.body.data.login.accessToken)
+    localStorage.setItem('amandus-user-refresh-token', res.body.data.login.accessToken)
   })
 })
 

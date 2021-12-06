@@ -15,11 +15,13 @@ import User from './model/user'
 import path from 'path'
 import { UserJWT } from './types/user'
 import { initTestRepo } from './utils/testUtil'
+import { RegisterUserInput } from './types/params'
 
-// import { RegisterUserInput } from './types/params'
 const app = express()
 
 app.use(cors())
+app.use(express.json())
+
 
 const corsOptions = {
   origin: true,
@@ -102,6 +104,11 @@ if (process.env.NODE_ENV === 'e2etest') {
   app.post('/reset', (_req, res) => {
     void User.deleteAll().then(() => res.status(204).send())
   })
+
+  app.post('/registerAdmin', (req, res) => {
+    const user = req.body as RegisterUserInput
+    void User.registerAdmin(user).then(() => res.status(200).send())
+  })
 }
 
 if (
@@ -120,15 +127,6 @@ if (process.env.NODE_ENV === 'e2etest') {
   } catch (e) {
     console.log(e);
   }
-
-  /*
-  const user: RegisterUserInput = {
-    username: "testuser", 
-    email: "testuser@testus.er", 
-    password: "Testi123!"
-  }
-  User.registerAdmin(user).catch(e => console.log(e))
-  */
 }
 
 if (process.env.NODE_ENV !== 'test') {

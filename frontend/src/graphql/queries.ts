@@ -78,6 +78,18 @@ export const ME = gql`
     }
   }
 `
+
+export const ALL_USERS = gql`
+  query getAllUsers {
+    getAllUsers {
+      id
+      username
+      user_role
+      email
+    }
+  }
+`
+
 export const GET_REPO_LIST = gql`
   query getRepoListFromService {
     getRepoListFromService {

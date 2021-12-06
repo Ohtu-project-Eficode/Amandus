@@ -16,7 +16,8 @@ const Query = `
         cloneRepository(url: String!): String
         currentToken: String
         getRepoListFromService: [Repository]
-        getSettings: Settings! 
+        getSettings: Settings!
+        getAllUsers: [User]
     },
 `
 

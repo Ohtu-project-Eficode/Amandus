@@ -162,6 +162,15 @@ const getUserById = async (id: number): Promise<UserType | null> => {
   return queryResult.rows[0].user
 }
 
+const getAllUsers = async (): Promise<UserType[] | null> => {
+  const sql = `SELECT id, username, user_role, email FROM Users;`
+  const queryResult = await pool.query<UserType>(sql)
+
+  if (queryResult.rowCount == 0) return null
+
+  return queryResult.rows
+}
+
 const deleteUser = async (username: string): Promise<void> => {
   const queryText = `
   DELETE FROM Users WHERE username=$1
@@ -177,6 +186,7 @@ export default {
   deleteAll,
   addServiceUser,
   getUserById,
+  getAllUsers,
   deleteUser,
   updateEmail,
   updateUserRole,
