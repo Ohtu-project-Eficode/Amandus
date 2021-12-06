@@ -113,7 +113,6 @@ const EditorBottomBar = ({
 
   const handleSave = async () => {
     if (!settings.misc.find(a => a.name === "Autosave Interval")?.active) {
-      console.log('gonna save locally')
       await handleLocalSave()
     }
     handleDialogOpen()
