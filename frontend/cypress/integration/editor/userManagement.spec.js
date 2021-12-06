@@ -6,6 +6,7 @@ describe('When visiting the user management page, as an admin user', () => {
     cy.createAdmin('admintestman', 'admin@dilledong.com', 'Testi123!')
     cy.login('admintestman', 'Testi123!')
     cy.visit(Cypress.env('HOST') + '/users')
+    cy.contains('normalusertestman')
   })
 
   it('I can delete other user', () => {
