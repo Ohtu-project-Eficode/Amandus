@@ -108,7 +108,6 @@ if (process.env.NODE_ENV === 'e2etest') {
 
   app.post('/registerAdmin', (req, res) => {
     const user = req.body as RegisterUserInput
-    console.log(user)
     void User.registerAdmin(user).then(() => res.status(200).send())
   })
 }
@@ -129,15 +128,6 @@ if (process.env.NODE_ENV === 'e2etest') {
   } catch (e) {
     console.log(e);
   }
-
-  /*
-  const user: RegisterUserInput = {
-    username: "testuser", 
-    email: "testuser@testus.er", 
-    password: "Testi123!"
-  }
-  User.registerAdmin(user).catch(e => console.log(e))
-  */
 }
 
 if (process.env.NODE_ENV !== 'test') {
