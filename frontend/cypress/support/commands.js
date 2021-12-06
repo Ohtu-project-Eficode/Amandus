@@ -23,7 +23,8 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-const createUser = (username, email, password) => {
+
+Cypress.Commands.add('createUserAndLogin', (username, email, password, login=true) => {
   const query = `mutation {
     register(
       username:"${username}",
@@ -41,21 +42,12 @@ const createUser = (username, email, password) => {
     body: { query },
     failOnStatusCode: false
   }).then((res) => {
-    return {
-      accessToken: res.body.data.register.accessToken,
-      refreshToken: res.body.data.register.refreshToken
+    cy.log(res);
+    if (login) {
+      localStorage.setItem('amandus-user-access-token', res.body.data.register.accessToken)
+      localStorage.setItem('amandus-user-refresh-token', res.body.data.register.accessToken)
     }
   })
-}
-
-Cypress.Commands.add('createUser',  (username, email, password) => {
-  createUser(username, email, password)
-})
-
-Cypress.Commands.add('createUserAndLogin', (username, email, password) => {
-  const { accessToken, refreshToken } = createUser(username, email, password)
-  localStorage.setItem('amandus-user-access-token', accessToken)
-  localStorage.setItem('amandus-user-refresh-token', refreshToken)
 })
 
 Cypress.Commands.add('createAdmin', (username, email, password) => {
