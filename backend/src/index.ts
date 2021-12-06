@@ -17,7 +17,6 @@ import { UserJWT } from './types/user'
 import { initTestRepo } from './utils/testUtil'
 import { RegisterUserInput } from './types/params'
 
-// import { RegisterUserInput } from './types/params'
 const app = express()
 
 app.use(cors())
