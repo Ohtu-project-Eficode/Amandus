@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client'
-import { COMMIT_CHANGES, PULL_REPO, RESET_FILE, RESET_HARD, SAVE_CHANGES } from '../../../graphql/mutations'
+import { COMMIT_CHANGES, PULL_REPO, RESET_FILE, RESET_HARD, SAVE_CHANGES, SAVE_LOCALLY } from '../../../graphql/mutations'
 import { REPO_STATE } from '../../../graphql/queries'
 
 const useEditor = (cloneUrl: string) => {
@@ -50,6 +50,15 @@ const useEditor = (cloneUrl: string) => {
       },
     ],
   })
+
+  const [saveLocally] = useMutation(SAVE_LOCALLY, {
+    refetchQueries: [
+      {
+        query: REPO_STATE,
+        variables: { repoUrl: cloneUrl },
+      },
+    ],
+  })
   
   return {
     saveChanges,
@@ -59,7 +68,8 @@ const useEditor = (cloneUrl: string) => {
     commitChanges, 
     commitLoading, 
     resetAll,
-    resetFile
+    resetFile,
+    saveLocally
   }
 }
 

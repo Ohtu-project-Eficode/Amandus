@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core'
 import React, { useState } from 'react'
 import useSaveDialog from '../../hooks/useSaveDialog'
+import useSettings from '../../hooks/useSettings'
 import useNotification from '../Notification/useNotification'
 import { useFiles } from './FileProvider'
 import LatestCommit from './LatestCommit'
@@ -23,6 +24,7 @@ interface Props {
   commitMessage: string
   autosaving: boolean
   onMergeError: () => void
+  handleLocalSave: () => void
 }
 
 const EditorBottomBar = ({
@@ -33,6 +35,7 @@ const EditorBottomBar = ({
   currentService,
   commitMessage,
   autosaving,
+  handleLocalSave
 }: Props) => {
   const [waitingToSave, setWaitingToSave] = useState(false)
 
@@ -43,6 +46,10 @@ const EditorBottomBar = ({
   const { files, selected } = useFiles()
 
   const pullProps = useSaveDialog()
+
+  const { settings: nestedSettings } = useSettings()
+  const settings = nestedSettings?.settings
+
 
   const {
     dialogOpen,
@@ -104,7 +111,16 @@ const EditorBottomBar = ({
     }
   }
 
+  const handleSave = async () => {
+    if (!settings.misc.find(a => a.name === "Autosave Interval")?.active) {
+      console.log('gonna save locally')
+      await handleLocalSave()
+    }
+    handleDialogOpen()
+  }
+
   const handlePull = async () => {
+
     try {
       await pullRepo({ variables: { repoUrl: cloneUrl } })
     } catch (error) {
@@ -184,7 +200,7 @@ const EditorBottomBar = ({
             color="primary"
             variant="contained"
             disabled={pullLoading || mutationSaveLoading}
-            onClick={handleDialogOpen}
+            onClick={handleSave}
           >
             Save
           </Button>

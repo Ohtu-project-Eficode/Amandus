@@ -6,6 +6,7 @@ import useAutoSave from '../../../hooks/useAutoSave'
 import ConflictedEditorBottomBar from '../ConflictedBottomBar'
 import EditorBottomBar from '../EditorBottomBar'
 import { useFiles } from '../FileProvider'
+import useEditor from './useMonacoEditor'
 
 interface Props {
   content: string
@@ -53,6 +54,19 @@ const MonacoEditor = ({
     editorRef.current = editor
   }
 
+  const { saveLocally } = useEditor(cloneUrl)
+
+  const handleLocalSave = async () => {
+    editorRef.current && await saveLocally({
+      variables: {
+        file: {
+          name: filename,
+          content: editorRef.current.getValue(),
+        },
+      }
+    })
+  }
+
   return (
     <div>
       <h2 className={classes.title}>
@@ -81,16 +95,17 @@ const MonacoEditor = ({
           modified={content}
         />
       ) : (
-        <EditorBottomBar
-          cloneUrl={cloneUrl}
-          currentBranch={currentBranch}
-          filename={filename}
-          currentService={currentService}
-          autosaving={autosaving}
-          onMergeError={onMergeError}
-          commitMessage={commitMessage}
-        />
-      )}
+          <EditorBottomBar
+            cloneUrl={cloneUrl}
+            currentBranch={currentBranch}
+            filename={filename}
+            currentService={currentService}
+            handleLocalSave={handleLocalSave}
+            autosaving={autosaving}
+            onMergeError={onMergeError}
+            commitMessage={commitMessage}
+          />
+        )}
     </div>
   )
 }
