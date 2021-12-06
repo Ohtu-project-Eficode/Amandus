@@ -10,6 +10,10 @@ import {
   IS_GH_CONNECTED,
   IS_GL_CONNECTED,
 } from '../graphql/queries'
+import { Button } from '@material-ui/core'
+import { useMutation } from '@apollo/client'
+import { DELETE_SERVICE_TOKENS } from '../graphql/mutations'
+import { UserType } from '../types'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -19,6 +23,10 @@ const useStyles = makeStyles(() =>
     gridWrapper: {
       display: 'flex',
       alignItems: 'center',
+    },
+    deleteTokensButton: {
+      backgroundColor: 'violet',
+      margin: '25px 0px 15px 0px'
     },
   })
 )
@@ -35,12 +43,31 @@ const useConnectionStatuses = () => {
   }
 }
 
-const Connections = () => {
+interface Props {
+  user: UserType | undefined
+}
+
+const Connections = ({ user }: Props) => {
   const classes = useStyles()
 
   const { githubConnected, gitlabConnected, bitbucketConnected } =
     useConnectionStatuses()
 
+  const [deleteTokens] = useMutation(DELETE_SERVICE_TOKENS)
+
+  const handleDeleteTokensClick = async () => {
+    await deleteTokens({
+      variables: {
+        username: user?.username
+      }
+    })
+    window.location.reload()
+  }
+
+
+  const showDeleteTokensButton
+    = githubConnected || gitlabConnected || bitbucketConnected
+    
   return (
     <Container className={classes.root}>
       <Grid
@@ -61,6 +88,20 @@ const Connections = () => {
         <Grid item>
           <BitbucketAuthBtn connected={bitbucketConnected} />
         </Grid>
+        {showDeleteTokensButton &&
+          <Grid item>
+            <Button
+              id="delete-tokens"
+              name="delete-tokens"
+              className={classes.deleteTokensButton}
+              color="primary"
+              variant="contained"
+              onClick={handleDeleteTokensClick}
+            >
+              Disconnect all services (delete tokens)
+            </Button>
+          </Grid>
+        }
       </Grid>
     </Container>
   )

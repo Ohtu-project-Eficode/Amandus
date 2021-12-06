@@ -84,7 +84,7 @@ const App = () => {
               </Route>
 
               <Route exact path="/connections">
-                <Connections />
+                <Connections user={user?.me}/>
               </Route>
 
               <Route exact path="/accountSettings">
