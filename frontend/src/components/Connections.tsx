@@ -14,6 +14,8 @@ import { Button } from '@material-ui/core'
 import { useMutation } from '@apollo/client'
 import { DELETE_SERVICE_TOKENS } from '../graphql/mutations'
 import { UserType } from '../types'
+import useSaveDialog from '../hooks/useSaveDialog'
+import PromptDialog from './PromptDialog'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -55,7 +57,7 @@ const Connections = ({ user }: Props) => {
 
   const [deleteTokens] = useMutation(DELETE_SERVICE_TOKENS)
 
-  const handleDeleteTokensClick = async () => {
+  const handleDeleteTokens = async () => {
     await deleteTokens({
       variables: {
         username: user?.username
@@ -64,6 +66,15 @@ const Connections = ({ user }: Props) => {
     window.location.reload()
   }
 
+  const {
+    dialogOpen,
+    handleDialogClose,
+    handleDialogOpen,
+  } = useSaveDialog()
+
+  const handleDeleteClick = () => {
+    handleDialogOpen()
+  }
 
   const showDeleteTokensButton
     = githubConnected || gitlabConnected || bitbucketConnected
@@ -88,6 +99,12 @@ const Connections = ({ user }: Props) => {
         <Grid item>
           <BitbucketAuthBtn connected={bitbucketConnected} />
         </Grid>
+        <PromptDialog
+        open={dialogOpen}
+        handleClose={handleDialogClose}
+        handleSubmit={handleDeleteTokens}
+        dialogTitle={'By confirming you will be disconnected from your services'}
+      />
         {showDeleteTokensButton &&
           <Grid item>
             <Button
@@ -96,7 +113,7 @@ const Connections = ({ user }: Props) => {
               className={classes.deleteTokensButton}
               color="primary"
               variant="contained"
-              onClick={handleDeleteTokensClick}
+              onClick={handleDeleteClick}
             >
               Disconnect all services (delete tokens)
             </Button>
