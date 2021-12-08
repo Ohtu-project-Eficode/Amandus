@@ -73,39 +73,6 @@ export const requestBitbucketUserEmail = (
     })
 }
 
-export const refreshBitbucketToken = (
-  refreshToken: string,
-  fetch: typeof nodeFetch = nodeFetch
-): Promise<AccessTokenResponse> => {
-  const credentials = {
-    client_id: config.BITBUCKET_CLIENT_ID || '',
-    client_secret: config.BITBUCKET_CLIENT_SECRET || '',
-  }
-
-  const digested = Buffer.from(
-    `${credentials.client_id}:${credentials.client_secret}`
-  ).toString('base64')
-
-  const params = new URLSearchParams({
-    grant_type: 'refresh_token',
-    refresh_token: `${refreshToken}`,
-  })
-
-  return fetch('https://bitbucket.org/site/oauth2/access_token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/json',
-      Authorization: `Basic ${digested}`,
-    },
-    body: params,
-  })
-    .then<AccessTokenResponse>((res) => res.json())
-    .catch((error: Error) => {
-      throw new Error(error.message)
-    })
-}
-
 export const requestBitbucketUser = async (
   code: string,
   fetch: typeof nodeFetch
