@@ -50,32 +50,6 @@ export const requestGitLabUserAccount = (
     })
 }
 
-export const refreshGitLabToken = (
-  refreshToken: string,
-  fetch: typeof nodeFetch = nodeFetch
-): Promise<AccessTokenResponse> => {
-  const credentials = {
-    client_id: config.GITLAB_CLIENT_ID || '',
-    client_secret: config.GITLAB_CLIENT_SECRET || '',
-    refresh_token: refreshToken,
-    grant_type: 'refresh_token',
-    redirect_uri: config.GITLAB_CB_URL,
-  }
-
-  return fetch('https://gitlab.com/oauth/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify(credentials),
-  })
-    .then<AccessTokenResponse>((res) => res.json())
-    .catch((error: Error) => {
-      throw new Error(error.message)
-    })
-}
-
 export const requestGitLabUser = async (
   code: string,
   fetch: typeof nodeFetch
