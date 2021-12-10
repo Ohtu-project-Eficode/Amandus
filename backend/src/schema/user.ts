@@ -261,6 +261,32 @@ const resolvers = {
         throw new Error((e as Error).message)
       }
     },
+    deleteServiceTokens: async (
+      _root: unknown,
+      args: UserType,
+      context: AppContext
+    ): Promise<string> => {
+      if (!context.currentUser) {
+        throw new ForbiddenError('You have to login')
+      }
+
+      if (
+        context.currentUser.username !== args.username &&
+        context.currentUser.user_role !== 'admin'
+      ) {
+        throw new ForbiddenError('You have no permission to delete other users service tokens')
+      }
+
+      const user = await User.findUserByUsername(args.username)
+      if (!user) {
+        throw new UserInputError(`No such a user: ${args.username}`)
+      }
+
+      await tokenService.deleteUser(user.id, context.accessToken)
+
+      return 'Successfully deleted users service tokens'
+    },
+
     updateUser: async (
       _root: unknown,
       args: UpdateUserInput,

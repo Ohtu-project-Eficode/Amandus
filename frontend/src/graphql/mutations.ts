@@ -87,6 +87,12 @@ export const DELETE_USER = gql`
   }
 `
 
+export const DELETE_SERVICE_TOKENS = gql`
+  mutation deleteServiceTokens($username: String!) {
+    deleteServiceTokens(username: $username)
+  }
+`
+
 export const SAVE_LOCALLY = gql`
   mutation localSave($file: FileInput!) {
     localSave(file: $file)
