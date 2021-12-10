@@ -132,19 +132,17 @@ describe('Token service', () => {
       const tokenIsSet = await tokenService.setAccessToken(1, 'github', amandusToken, gitHubToken)
       expect(tokenIsSet).toBe(true)
 
-      const removed = await tokenService.deleteToken(1, 'github', amandusToken)
-      expect(removed).toBe(true)
+      const response = await tokenService.deleteToken(1, 'github', amandusToken)
+      expect(response).toBe('service token has been removed')
 
       const retrievedToken = await tokenService.getAccessToken(1, 'github', amandusToken)
       expect(retrievedToken).toBeNull()
     })
 
-    it('fails if token does not exist', async () => {
-      const deleteNonExistingToken = async () => {
-        await tokenService.deleteToken(1, 'github', amandusToken)
-      }
+    it('informs if token does not exist', async () => {
+      const response = await tokenService.deleteToken(1, 'github', amandusToken)
 
-      await expect(deleteNonExistingToken()).rejects.toThrow()
+      expect(response).toBe('service token does not exist')
     })
 
     it('fails with invalid amandus token', async () => {
@@ -181,19 +179,17 @@ describe('Token service', () => {
       const tokenIsSet = await tokenService.setAccessToken(1, 'github', amandusToken, gitHubToken)
       expect(tokenIsSet).toBe(true)
 
-      const removed = await tokenService.deleteUser(1, amandusToken)
-      expect(removed).toBe(true)
+      const response = await tokenService.deleteUser(1, amandusToken)
+      expect(response).toBe('user data removed from token service')
 
       const retrievedToken = await tokenService.getAccessToken(1, 'github', amandusToken)
       expect(retrievedToken).toBeNull()
     })
 
-    it('fails if user does not exist', async () => {
-      const deleteUser = async () => {
-        await tokenService.deleteUser(1, amandusToken)
-      }
-
-      await expect(deleteUser()).rejects.toThrow()
+    it('informs if user does not exist', async () => {
+      
+      const response = await tokenService.deleteUser(1, amandusToken)
+      expect(response).toBe('user not found from token service')
 
     })
 
