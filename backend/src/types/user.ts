@@ -31,6 +31,7 @@ export interface UserRecord {
 export interface UserJWT {
   id: number
   username: string
+  user_role: string
 }
 
 export interface UserForCommit {
