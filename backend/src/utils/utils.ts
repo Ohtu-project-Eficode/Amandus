@@ -10,6 +10,7 @@ const repositoriesDir = config.REPONAME
 
 import { ServiceName, ServiceTokenType } from '../types/service'
 import { AppContext, UserForCommit } from '../types/user'
+import User from '../model/user'
 
 const execProm = promisify(exec)
 
@@ -155,15 +156,17 @@ export const getServiceUrlFromServiceName = (service: ServiceName): string => {
  *
  * @returns usedService, gitUsername, email, repositoryName, repoLocation
  */
-export const extractUserForCommit = (
+export const extractUserForCommit = async (
   fileName: string,
   context: AppContext
-): UserForCommit => {
+): Promise<UserForCommit> => {
   const usedService = getServiceFromFilePath(fileName)
-  const currentService = context.currentUser.services?.find(
+  const amandusUser = await User.getUserById(context.currentUser.id)
+  if (!amandusUser) throw new Error('user not found')
+
+  const currentService = amandusUser?.services?.find(
     (s) => s.serviceName === usedService
   )
-  const amandusUser = context.currentUser
   const gitUsername = currentService?.username || context.currentUser.username
   const email = currentService?.email || amandusUser.email
 

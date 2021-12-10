@@ -33,6 +33,7 @@ import tokenService from '../services/token'
 import { Repository } from '../types/repository'
 import { File } from '../types/file'
 import config from '../utils/config'
+import User from '../model/user'
 
 const repositoriesDir = config.REPONAME
 
@@ -156,7 +157,8 @@ const resolvers = {
         throw new ForbiddenError('You have to login')
       }
 
-      if (!context.currentUser.services) {
+      const currentUser = await User.getUserById(context.currentUser.id)
+      if (!currentUser?.services) {
         throw new Error('User is not connected to any service')
       }
 
@@ -164,7 +166,7 @@ const resolvers = {
         throw new Error('access token is missing!!')
       }
 
-      const allRepositories = await Promise.all(context.currentUser.services.map(
+      const allRepositories = await Promise.all(currentUser.services.map(
         async (service) => {
           const token = await tokenService.getAccessToken(
             context.currentUser.id,
