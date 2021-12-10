@@ -7,6 +7,7 @@ import ConflictedEditorBottomBar from '../ConflictedBottomBar'
 import EditorBottomBar from '../EditorBottomBar'
 import { useFiles } from '../FileProvider'
 import useEditor from './useMonacoEditor'
+import useNotification  from '../../Notification/useNotification'
 
 interface Props {
   content: string
@@ -56,6 +57,8 @@ const MonacoEditor = ({
 
   const { saveLocally } = useEditor(cloneUrl)
 
+  const { notify } = useNotification()
+
   const handleLocalSave = async () => {
     editorRef.current && await saveLocally({
       variables: {
@@ -65,6 +68,7 @@ const MonacoEditor = ({
         },
       }
     })
+    notify('Local changes saved')
   }
 
   return (
