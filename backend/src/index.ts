@@ -41,12 +41,13 @@ const server = new ApolloServer({
       const decodedAccessToken = <UserJWT>verify(accessTokenHeader, config.JWT_SECRET)
       if (!decodedAccessToken.id) return
 
-      const currentUser = await User.getUserById(decodedAccessToken.id)
-      if (!currentUser) return
+      const currentUser: UserJWT = {
+        id: decodedAccessToken.id,
+        username: decodedAccessToken.username
+      }
 
       const accessToken = accessTokenHeader as string
       const refreshToken = refreshTokenHeader as string
-
       return { currentUser, accessToken, refreshToken }
     } catch (e) {
       if (e instanceof jwt.TokenExpiredError) {

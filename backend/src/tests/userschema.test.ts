@@ -73,7 +73,10 @@ const UPDATE_USER = gql`
       newPassword: $newPassword,
       newEmail: $newEmail,
       newUserRole: $newUserRole
-    )
+    ) {
+      accessToken
+      refreshToken
+    }
   }
 `
 describe('User schema register mutations', () => {
@@ -673,7 +676,7 @@ describe('updateUser', () => {
         newPassword: 'Testi123!', 
       },
     })
-    expect(res).toStrictEqual({"data": {"updateUser": "Successfully updated"}})
+    expect(res).toHaveProperty('data.updateUser.accessToken')
 
     const userAfterMutation = await User.findUserByUsername('testuser_newname')
     expect(userAfterMutation).toBeTruthy()
@@ -769,7 +772,7 @@ describe('updateUser', () => {
         newUserRole: 'admin'
       },
     })
-    expect(res).toStrictEqual({"data": {"updateUser": "Successfully updated"}})
+    expect(res).toHaveProperty('data.updateUser.accessToken')
     const userAfterMutation = await User.findUserByUsername('testuser33')
     expect(userAfterMutation).toBeTruthy()
     expect(userAfterMutation?.email).toBe('testi@testi.com')

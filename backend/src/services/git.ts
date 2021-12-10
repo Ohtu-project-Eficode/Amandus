@@ -33,6 +33,8 @@ import {
 } from '../utils/gitUtils'
 import tokenService from '../services/token'
 import { ApolloError } from 'apollo-server-errors'
+import User from '../model/user'
+import { ForbiddenError } from 'apollo-server'
 
 export const switchCurrentBranch = async (
   repoLocation: string,
@@ -60,7 +62,15 @@ export const cloneRepository = async (
   cloneTo: typeof cloneRepositoryToSpecificFolder
     = cloneRepositoryToSpecificFolder
 ): Promise<void> => {
-  const user = context.currentUser
+  if (!context.currentUser?.id) {
+    throw new ForbiddenError('You have to login')
+  }
+
+  const user = await User.getUserById(context.currentUser.id)
+  if (!user) {
+    throw new Error(`Could not find user with id: ${context.currentUser.id}`)
+  }
+
   const repoLocation = getRepoLocationFromUrlString(url, user.username)
 
   const service = getServiceNameFromUrlString(url)
@@ -113,7 +123,7 @@ export const saveChanges = async (
     email,
     repositoryName,
     repoLocation
-  } = extractUserForCommit(firstFile.name, context)
+  } = await extractUserForCommit(firstFile.name, context)
 
   const remoteToken = await tokenService.getAccessToken(
     amandusUser.id,
@@ -176,7 +186,7 @@ export const saveMerge = async (
     email,
     repositoryName,
     repoLocation
-  } = extractUserForCommit(firstFile.name, context)
+  } = await extractUserForCommit(firstFile.name, context)
 
   const remoteToken = await tokenService.getAccessToken(
     amandusUser.id,
@@ -257,7 +267,7 @@ export const addAndCommitLocal = async (
   const {
     gitUsername,
     email,
-  } = extractUserForCommit(fileName, context)
+  } = await extractUserForCommit(fileName, context)
 
   const gitObject = getGitObject(repoLocation)
   const statusResult = await gitStatus(gitObject)
