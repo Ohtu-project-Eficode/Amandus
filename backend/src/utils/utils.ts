@@ -8,7 +8,7 @@ import config from './config'
 
 const repositoriesDir = config.REPONAME
 
-import { ServiceName, ServiceTokenType } from '../types/service'
+import { ServiceName } from '../types/service'
 import { AppContext, UserForCommit } from '../types/user'
 import User from '../model/user'
 
@@ -44,29 +44,6 @@ export const getFileNameFromFilePath = (
   repositoryName: string
 ): string => {
   return filePath.split(`${repositoryName}/`)[1] || filePath
-}
-
-interface ServiceProps {
-  service: ServiceName
-  appContext: AppContext
-}
-
-export const getServiceTokenFromAppContext = ({
-  service,
-  appContext,
-}: ServiceProps): ServiceTokenType | undefined => {
-  let tokenToReturn: ServiceTokenType | undefined
-  switch (service) {
-    case 'gitlab':
-      tokenToReturn = appContext.gitlabToken as ServiceTokenType
-      break
-    case 'bitbucket':
-      tokenToReturn = appContext.bitbucketToken as ServiceTokenType
-      break
-    default:
-      tokenToReturn = appContext.githubToken as ServiceTokenType
-  }
-  return tokenToReturn
 }
 
 export const writeToFile = (file: File): void => {
