@@ -9,6 +9,7 @@ export const createTokens = (user: UserType | null): Tokens => {
     {
       id: user?.id,
       username: user?.username,
+      role: user?.user_role
     },
     config.JWT_SECRET,
     { expiresIn: '15 min' }
@@ -18,9 +19,9 @@ export const createTokens = (user: UserType | null): Tokens => {
     {
       id: user?.id,
       username: user?.username,
-      // todo: should have "count"
+      role: user?.user_role
     },
-    config.JWT_SECRET, //!!! TODO: Should have different secret!
+    config.JWT_SECRET,
     { expiresIn: '7 days' }
   )
   return { accessToken, refreshToken }

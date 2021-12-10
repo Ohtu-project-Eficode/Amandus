@@ -3,6 +3,7 @@ export type QueryType = 'state' | 'token'
 
 export interface UserJWT {
   id: number
+  role: 'admin' | 'non-admin'
   username: string
   githubToken?: string
   bitbucketToken?: string

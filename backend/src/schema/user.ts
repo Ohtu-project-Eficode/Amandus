@@ -61,7 +61,7 @@ const resolvers = {
       if (!context.currentUser || context.currentUser.user_role !== 'admin') {
         throw new ForbiddenError('Not authorized')
       }
-      
+
       return await User.getAllUsers()
     },
     isGithubConnected: async (
@@ -174,7 +174,6 @@ const resolvers = {
         throw new UserInputError(`${service} code not provided`)
       }
 
-      //TODO: rename requestServiceUser, as it returns user and token, not just user
       const serviceUserResponse = await requestServiceUser(service, args.code)
 
       await tokenService.setAccessToken(
@@ -259,7 +258,7 @@ const resolvers = {
         await tokenService.deleteUser(user.id, context.accessToken)
       } catch (e) {
         console.log('encountered error while attempting to delete user tokens')
-        console.log((e as Error).message)
+        throw new Error((e as Error).message)
       }
     },
     updateUser: async (
@@ -267,7 +266,6 @@ const resolvers = {
       args: UpdateUserInput,
       context: AppContext
     ): Promise<string> => {
-      // auth
       if (!context.currentUser) {
         throw new ForbiddenError('You have to login')
       }
@@ -279,7 +277,6 @@ const resolvers = {
         throw new ForbiddenError('You have no permission to edit other users')
       }
 
-      // validations
       if (!(await User.findUserByUsername(args.username))) {
         throw new UserInputError(`No such a user: ${args.username}`)
       }
@@ -289,7 +286,6 @@ const resolvers = {
         throw new UserInputError(errorMessage)
       }
 
-      // updates
       if (args.newUserRole) {
         if (context.currentUser.user_role !== 'admin') {
           throw new ForbiddenError('You have no permission to change roles')
