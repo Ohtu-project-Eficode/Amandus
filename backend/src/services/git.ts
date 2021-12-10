@@ -62,9 +62,13 @@ export const cloneRepository = async (
   cloneTo: typeof cloneRepositoryToSpecificFolder
     = cloneRepositoryToSpecificFolder
 ): Promise<void> => {
+  if (!context.currentUser?.id) {
+    throw new ForbiddenError('You have to login')
+  }
+
   const user = await User.getUserById(context.currentUser.id)
   if (!user) {
-    throw new ForbiddenError('You have to login')
+    throw new Error(`Could not find user with id: ${context.currentUser.id}`)
   }
 
   const repoLocation = getRepoLocationFromUrlString(url, user.username)
