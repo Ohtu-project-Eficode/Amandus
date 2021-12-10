@@ -83,7 +83,7 @@ const UpdateUserForm = ({ user }: Props) => {
 
   const updateAccount = async (data: MyUpdateForm, resetForm: Function) => {
     try {
-      await updateUser({
+      const updateResponse = await updateUser({
         variables: {
           username: user.username,
           newUsername: data.username === '' ? undefined : data.username,
@@ -91,6 +91,14 @@ const UpdateUserForm = ({ user }: Props) => {
           newPassword: data.password === '' ? undefined : data.password,
         },
       })
+      localStorage.setItem(
+        'amandus-user-access-token',
+        updateResponse.data.updateUser.accessToken
+      )
+      localStorage.setItem(
+        'amandus-user-refresh-token',
+        updateResponse.data.updateUser.refreshToken
+      )
       setFormStatus(formStatusProps.success)
     } catch (error) {
       if (
@@ -191,9 +199,9 @@ const UpdateUserForm = ({ user }: Props) => {
                     helperText={
                       touched.password && errors.password
                         ? 'Make sure your password is minimum of 8 characters long and consists of at least 1 uppercase, lowercase, number and one special ' +
-                          'character from !?@#$%^&*(). Password cannot end with an empty space.'
+                        'character from !?@#$%^&*(). Password cannot end with an empty space.'
                         : 'Valid password is minimum of 8 characters long and consists of at least 1 uppercase, lowercase, number and one special ' +
-                          'character from !?@#$%^&*(). Password cannot end with an empty space.'
+                        'character from !?@#$%^&*(). Password cannot end with an empty space.'
                     }
                     error={touched.password && errors.password ? true : false}
                   />

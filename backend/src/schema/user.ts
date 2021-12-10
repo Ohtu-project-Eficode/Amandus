@@ -51,7 +51,7 @@ const resolvers = {
       _args: unknown,
       context: AppContext
     ): Promise<UserType | null> => {
-      if(!context.currentUser?.id) return null
+      if (!context.currentUser?.id) return null
       return await User.getUserById(context.currentUser.id)
     },
     getAllUsers: async (
@@ -60,10 +60,10 @@ const resolvers = {
       context: AppContext
     ): Promise<UserType[] | null> => {
       const currentUser = await User.getUserById(context.currentUser.id)
-      if (!currentUser|| currentUser.user_role !== 'admin') {
+      if (!currentUser || currentUser.user_role !== 'admin') {
         throw new ForbiddenError('Not authorized')
       }
-      
+
       return await User.getAllUsers()
     },
     isGithubConnected: async (
@@ -296,7 +296,7 @@ const resolvers = {
       _root: unknown,
       args: UpdateUserInput,
       context: AppContext
-    ): Promise<string> => {
+    ): Promise<Tokens> => {
       // auth
       if (!context.currentUser) {
         throw new ForbiddenError('You have to login')
@@ -338,7 +338,6 @@ const resolvers = {
 
       if (args.newUsername) {
         await User.updateUsername(args.username, args.newUsername)
-        context.currentUser.username = args.newUsername
 
         const currentReposLocation = `./${repositoriesDir}/${args.username}/`
         const newReposLocation = `./${repositoriesDir}/${args.newUsername}/`
@@ -349,7 +348,8 @@ const resolvers = {
         }
       }
 
-      return 'Successfully updated'
+      const tokens = createTokens(await User.getUserById(context.currentUser.id))
+      return tokens
     },
   },
 }

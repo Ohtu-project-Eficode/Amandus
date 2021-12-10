@@ -145,6 +145,9 @@ export const UPDATE_USER = gql`
       newEmail: $newEmail,
       newPassword: $newPassword,
       newUserRole: $newUserRole
-    )
+    ) {
+      accessToken
+      refreshToken
+    }
   }
 `
