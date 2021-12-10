@@ -338,6 +338,7 @@ const resolvers = {
 
       if (args.newUsername) {
         await User.updateUsername(args.username, args.newUsername)
+        context.currentUser.username = args.newUsername
 
         const currentReposLocation = `./${repositoriesDir}/${args.username}/`
         const newReposLocation = `./${repositoriesDir}/${args.newUsername}/`
