@@ -14,6 +14,9 @@ import { Button } from '@material-ui/core'
 import { useMutation } from '@apollo/client'
 import { DELETE_SERVICE_TOKENS } from '../graphql/mutations'
 import { UserType } from '../types'
+import useSaveDialog from '../hooks/useSaveDialog'
+import PromptDialog from './PromptDialog'
+import useNotification from './Notification/useNotification'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -32,14 +35,19 @@ const useStyles = makeStyles(() =>
 )
 
 const useConnectionStatuses = () => {
-  const { data: ghData } = useQuery(IS_GH_CONNECTED)
-  const { data: glData } = useQuery(IS_GL_CONNECTED)
-  const { data: bbData } = useQuery(IS_BB_CONNECTED)
+  const { data: ghData, refetch: refetchGh } = useQuery(IS_GH_CONNECTED)
+  const { data: glData, refetch: refetchGl } = useQuery(IS_GL_CONNECTED)
+  const { data: bbData, refetch: refetchBb } = useQuery(IS_BB_CONNECTED)
 
   return {
     githubConnected: ghData?.isGithubConnected ?? false,
     gitlabConnected: glData?.isGitLabConnected ?? false,
     bitbucketConnected: bbData?.isBitbucketConnected ?? false,
+    refetchAll: () => {
+      refetchGh()
+      refetchGl()
+      refetchBb()
+    }
   }
 }
 
@@ -50,24 +58,43 @@ interface Props {
 const Connections = ({ user }: Props) => {
   const classes = useStyles()
 
-  const { githubConnected, gitlabConnected, bitbucketConnected } =
+  const { githubConnected, gitlabConnected, bitbucketConnected, refetchAll } =
     useConnectionStatuses()
 
   const [deleteTokens] = useMutation(DELETE_SERVICE_TOKENS)
+  const { notify } = useNotification()
 
-  const handleDeleteTokensClick = async () => {
-    await deleteTokens({
-      variables: {
-        username: user?.username
-      }
-    })
-    window.location.reload()
+  const handleDeleteTokens = async () => {
+    try {
+      await deleteTokens({
+        variables: {
+          username: user?.username
+        }
+      })
+      refetchAll()
+      handleDialogClose()
+      notify('Deleted tokens succesfully')
+
+    } catch(e) {
+      handleDialogClose()
+      notify('Error deleting tokens', true)
+      console.error(e)
+    }
   }
 
+  const {
+    dialogOpen,
+    handleDialogClose,
+    handleDialogOpen,
+  } = useSaveDialog()
+
+  const handleDeleteClick = () => {
+    handleDialogOpen()
+  }
 
   const showDeleteTokensButton
     = githubConnected || gitlabConnected || bitbucketConnected
-    
+
   return (
     <Container className={classes.root}>
       <Grid
@@ -88,6 +115,12 @@ const Connections = ({ user }: Props) => {
         <Grid item>
           <BitbucketAuthBtn connected={bitbucketConnected} />
         </Grid>
+        <PromptDialog
+          open={dialogOpen}
+          handleClose={handleDialogClose}
+          handleSubmit={handleDeleteTokens}
+          dialogTitle={'By confirming you will be disconnected from your services'}
+        />
         {showDeleteTokensButton &&
           <Grid item>
             <Button
@@ -96,7 +129,7 @@ const Connections = ({ user }: Props) => {
               className={classes.deleteTokensButton}
               color="primary"
               variant="contained"
-              onClick={handleDeleteTokensClick}
+              onClick={handleDeleteClick}
             >
               Disconnect all services (delete tokens)
             </Button>
