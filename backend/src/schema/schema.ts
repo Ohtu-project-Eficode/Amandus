@@ -92,7 +92,7 @@ const Mutation = `
             newEmail: String,
             newPassword: String,
             newUserRole: String
-        ): String
+        ): Tokens
         localSave(
             file: FileInput!
         ): String

@@ -1,9 +1,10 @@
 import { sign } from 'jsonwebtoken'
 import { Tokens } from '../types/tokens'
+import { UserJWT } from '../types/user'
 import { UserType } from '../types/user'
 import config from './config'
 
-export const createTokens = (user: UserType | null): Tokens => {
+export const createTokens = (user: UserType | UserJWT | null): Tokens => {
   const accessToken = sign(
     {
       id: user?.id,

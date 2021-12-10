@@ -46,22 +46,24 @@ const typeDef = `
 
 const resolvers = {
   Query: {
-    me: (
+    me: async (
       _root: unknown,
       _args: unknown,
       context: AppContext
-    ): UserType | undefined => {
-      return context.currentUser
+    ): Promise<UserType | null> => {
+      if (!context.currentUser?.id) return null
+      return await User.getUserById(context.currentUser.id)
     },
     getAllUsers: async (
       _root: unknown,
       _args: unknown,
       context: AppContext
     ): Promise<UserType[] | null> => {
-      if (!context.currentUser || context.currentUser.user_role !== 'admin') {
+      const currentUser = await User.getUserById(context.currentUser.id)
+      if (!currentUser || currentUser.user_role !== 'admin') {
         throw new ForbiddenError('Not authorized')
       }
-      
+
       return await User.getAllUsers()
     },
     isGithubConnected: async (
@@ -271,9 +273,11 @@ const resolvers = {
         throw new ForbiddenError('You have to login')
       }
 
+      const currentUser = await User.getUserById(context.currentUser.id)
+
       if (
         context.currentUser.username !== args.username &&
-        context.currentUser.user_role !== 'admin'
+        currentUser?.user_role !== 'admin'
       ) {
         throw new ForbiddenError('You have no permission to delete other users service tokens')
       }
@@ -292,15 +296,16 @@ const resolvers = {
       _root: unknown,
       args: UpdateUserInput,
       context: AppContext
-    ): Promise<string> => {
+    ): Promise<Tokens> => {
       // auth
       if (!context.currentUser) {
         throw new ForbiddenError('You have to login')
       }
+      const currentUser = await User.getUserById(context.currentUser.id)
 
       if (
-        context.currentUser.username !== args.username &&
-        context.currentUser.user_role !== 'admin'
+        currentUser?.username !== args.username &&
+        currentUser?.user_role !== 'admin'
       ) {
         throw new ForbiddenError('You have no permission to edit other users')
       }
@@ -317,7 +322,7 @@ const resolvers = {
 
       // updates
       if (args.newUserRole) {
-        if (context.currentUser.user_role !== 'admin') {
+        if (currentUser?.user_role !== 'admin') {
           throw new ForbiddenError('You have no permission to change roles')
         }
         await User.updateUserRole(args.username, args.newUserRole)
@@ -343,7 +348,8 @@ const resolvers = {
         }
       }
 
-      return 'Successfully updated'
+      const tokens = createTokens(await User.getUserById(context.currentUser.id))
+      return tokens
     },
   },
 }

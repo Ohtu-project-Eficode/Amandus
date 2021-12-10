@@ -13,7 +13,7 @@ export type ContextTokens = {
 }
 
 export interface AppContext extends ContextTokens {
-  currentUser: UserType
+  currentUser: UserJWT,
   accessToken: string,
   refreshToken: string
 }
@@ -31,9 +31,6 @@ export interface UserRecord {
 export interface UserJWT {
   id: number
   username: string
-  githubToken?: string
-  bitbucketToken?: string
-  gitlabToken?: string
 }
 
 export interface UserForCommit {
