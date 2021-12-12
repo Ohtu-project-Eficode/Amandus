@@ -123,7 +123,8 @@ const Header = ({ user, theme, toggleTheme }: Props) => {
                 Manage Account
               </Link>
             )}
-            {user && (
+
+            {user && user.user_role === 'admin' && (
               <Link
                 component={RouterLink}
                 className={classes.linkBtnTransparent}

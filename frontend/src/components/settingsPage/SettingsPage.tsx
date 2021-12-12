@@ -48,8 +48,6 @@ export const SettingsPage = ({ user }: Props) => {
 
   const { notify } = useNotification()
 
-  // Hides view from users that are not admins.
-  /*
   if (user?.user_role !== 'admin') {
     return (
       <h1>
@@ -57,7 +55,6 @@ export const SettingsPage = ({ user }: Props) => {
       </h1>
     )
   }
-*/
 
   const handleSubmit = async () => {
     try {

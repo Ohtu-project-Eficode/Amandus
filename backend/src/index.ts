@@ -43,7 +43,8 @@ const server = new ApolloServer({
 
       const currentUser: UserJWT = {
         id: decodedAccessToken.id,
-        username: decodedAccessToken.username
+        username: decodedAccessToken.username,
+        user_role: decodedAccessToken.user_role
       }
 
       const accessToken = accessTokenHeader as string

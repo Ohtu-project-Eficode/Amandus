@@ -93,7 +93,7 @@ const App = () => {
               </Route>
 
               <Route exact path="/users">
-                <UserManagement />
+                <UserManagement user={user?.me}/>
               </Route>
 
               <Route exact path="/settings">

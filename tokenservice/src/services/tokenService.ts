@@ -66,35 +66,40 @@ const removeToken = (
   amandusToken: string,
   service: ServiceName,
   id: number
-): void => {
+): string => {
   const tokenMap = getTokenMap(amandusToken, id)
 
-  const result = tokenMap?.delete(service)
-
-  if (!result) {
-    throw new Error('removal unsuccessful: token or service not found')
+  if(!tokenMap?.has(service)){
+    return 'service token does not exist'
   }
 
+  tokenMap?.delete(service)
+
+  return 'service token has been removed'
 }
 
 const removeUser = (
   amandusToken: string,
   id: number
-): void => {
+): string => {
   const decodedToken = <UserJWT>verify(amandusToken, config.JWT_SECRET)
+  
+  if (decodedToken.role === 'admin'){
+    tokenStorage.delete(id)
+    return `admin has removed user ${id}`
+  }
+
   if (id !== decodedToken.id) {
     throw new Error('token and id mismatch')
   }
 
   if (!tokenStorage.has(decodedToken.id)) {
-    throw new Error('user does not exist')
+    return 'user not found from token service'
   }
 
-  const result = tokenStorage.delete(decodedToken.id)
+  tokenStorage.delete(decodedToken.id)
 
-  if (!result) {
-    throw new Error(`User removal unsuccessful`)
-  }
+  return 'user data removed from token service'
 }
 
 const getServiceDetails = (

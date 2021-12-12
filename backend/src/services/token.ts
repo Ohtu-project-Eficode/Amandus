@@ -3,7 +3,7 @@ import fetch from 'node-fetch'
 
 import config from '../utils/config'
 
-const tokenServiceUrl = config.TOKEN_SERVICE_URL
+const tokenServiceUrl = config.TOKEN_SERVICE_URL || 'http://localhost:3002'
 
 const getAccessToken = async (
   id: number,
@@ -53,7 +53,7 @@ const deleteToken = async (
   id: number,
   service: ServiceName,
   amandusToken: string,
-): Promise<boolean> => {
+): Promise<string> => {
   const response = await fetch(`${tokenServiceUrl}/api/tokens/${id}/${service}`,
     {
       method: 'DELETE',
@@ -68,15 +68,15 @@ const deleteToken = async (
     throw new Error('Something went wrong while deleting user data from token service')
   }
 
-  const { removed } = await response.json() as { removed: boolean }
+  const { msg } = await response.json() as { msg: string }
 
-  return removed
+  return msg
 }
 
 const deleteUser = async (
   id: number,
   amandusToken: string
-): Promise<boolean> => {
+): Promise<string> => {
   const response = await fetch(`${tokenServiceUrl}/api/tokens/${id}`,
     {
       method: 'DELETE',
@@ -87,16 +87,12 @@ const deleteUser = async (
     })
 
   if (response.status !== 200) {
-    console.log('error while deleting user')
     throw new Error('Something went wrong while deleting user data from token service')
   }
 
-  const { removed } = await response.json() as { removed: boolean }
+  const { msg } = await response.json() as { msg: string }
 
-  if (!removed) {
-    console.log('user not deleted')
-  }
-  return removed
+  return msg
 }
 
 const isServiceConnected = async (
@@ -113,7 +109,6 @@ const isServiceConnected = async (
     throw new Error('Error fetching service connection status')
   }
 
-  // TODO: add checks for response format
   const { connected } = await response.json() as { connected: boolean }
 
   return connected

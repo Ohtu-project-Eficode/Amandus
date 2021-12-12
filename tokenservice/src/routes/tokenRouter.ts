@@ -46,9 +46,8 @@ router.get('/:id/:service', (req, res) => {
 router.delete('/:id/:service', (req, res) => {
   try {
     const { id, serviceName, amandusToken } = parseDeleteTokenRequest(req)
-
-    tokenService.removeToken(amandusToken, serviceName, id)
-    res.json({ removed: true })
+    const msg = tokenService.removeToken(amandusToken, serviceName, id)
+    res.json({ msg: msg })
   } catch (e) {
     const { name, message } = e as Error
 
@@ -61,9 +60,8 @@ router.delete('/:id/:service', (req, res) => {
 router.delete('/:id', (req, res) => {
   try {
     const { id, amandusToken } = parseDeleteUserRequest(req)
-
-    tokenService.removeUser(amandusToken, id)
-    res.json({ removed: true })
+    const msg = tokenService.removeUser(amandusToken, id)
+    res.json({ msg: msg })
   } catch (e) {
     const { name, message } = e as Error
 
