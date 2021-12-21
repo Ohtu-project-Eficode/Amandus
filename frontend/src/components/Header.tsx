@@ -10,8 +10,8 @@ import {
 import { Link as RouterLink, useHistory } from 'react-router-dom'
 import { UserType } from '../types'
 import Logo from './Logo'
-import useUser from '../hooks/useUser'
 import useNotification from './Notification/useNotification'
+import { useApolloClient } from '@apollo/client'
 
 interface Props {
   user: UserType | undefined
@@ -64,7 +64,7 @@ const Header = ({ user, theme, toggleTheme }: Props) => {
 
   const history = useHistory()
 
-  const { clearUserFromCache } = useUser()
+  const client = useApolloClient()
 
   const { notify } = useNotification()
 
@@ -76,7 +76,7 @@ const Header = ({ user, theme, toggleTheme }: Props) => {
     localStorage.removeItem('amandus-user-access-token')
     localStorage.removeItem('amandus-user-refresh-token')
 
-    clearUserFromCache()
+    client.clearStore()
 
     notify('Logout successful')
 
